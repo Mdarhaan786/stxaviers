@@ -67,6 +67,27 @@ def save_uploaded_image(uploaded_file):
             return ""
     return ""
 
+# Add this line to initialize data
+data = load_data()  # Ensure `data` is loaded at the start of the script
+
+# Main application logic
+st.title("St. Xavier's App")
+
+# Example usage of `data`
+st.subheader("School Inauguration")
+if data.get('inauguration_photo'):  # Safely access the photo
+    st.image(base64.b64decode(data['inauguration_photo']), caption="Inauguration Photo")
+else:
+    st.write("Inauguration photo not available")
+
+# Example of saving updates to data
+if st.button("Save Updates"):
+    # Update data as needed, e.g., changing 'home_content'
+    data['home_content'] = "Updated home content"
+    save_data(data)
+    st.success("Data saved successfully!")
+
+
 
 # Navigation
 def navigation():
@@ -80,44 +101,45 @@ def display_school_logo(data):
     else:
         st.write("School logo not available")
 
-# Home page
+#Homepage
 def home(data):
+    # First column for school logo
     col1, col2 = st.columns([1, 4])
     with col1:
-        display_school_logo(data)
+        display_school_logo(data)  # Assuming this function is defined elsewhere to display the logo
     with col2:
         st.title("Welcome to St. Xavier's High School")
-    st.markdown(data['home_content'])
-    
+
+    # Display home content
+    st.markdown(data.get('home_content', ''))
+
+    # Display latest news
     st.subheader("Latest News")
-    for news_item in data['news'][:3]:  # Display only the latest 3 news items
+    for news_item in data.get('news', [])[:3]:  # Display only the latest 3 news items
         st.write(news_item)
-    
+
+    # Display leadership photos (Chairman and Principal)
     st.subheader("Our Leadership")
     col1, col2 = st.columns(2)
     with col1:
-        if data['chairman_photo']:
+        if data.get('chairman_photo'):  # Safer access using .get
             st.image(base64.b64decode(data['chairman_photo']), caption="E. Anthony Reddy sir (Chairman sir)")
         else:
             st.write("Chairman photo not available")
     with col2:
-        if data['principal_photo']:
+        if data.get('principal_photo'):  # Safer access using .get
             st.image(base64.b64decode(data['principal_photo']), caption="G. Mar Reddy sir (Principal sir)")
         else:
             st.write("Principal photo not available")
 
+    # Display Inauguration photo
     st.subheader("School Inauguration")
-
-# Create three columns
-col1, col2, col3 = st.columns(3)
-
-# Use col1
-with col1:
-    if data['inauguration_photo']:
-        # Display the image in col1
-        st.image(base64.b64decode(data['inauguration_photo']), caption="Inauguration Photo")
-    else:
-        st.write("Inauguration photo not available")
+    col1, col2, col3 = st.columns(3)  # Creating three columns
+    with col1:
+        if data.get('inauguration_photo'):  # Safer access using .get
+            st.image(base64.b64decode(data['inauguration_photo']), caption="Inauguration Photo")
+        else:
+            st.write("Inauguration photo not available")
 
         
 
@@ -259,23 +281,39 @@ def admin_panel(data):
         st.rerun()
     
     # Update Chairman and Principal Photos
-    st.subheader("Update Photos")
-    chairman_photo = st.file_uploader("Upload Chairman Photo", type=["png", "jpg", "jpeg"])
-    principal_photo = st.file_uploader("Upload Principal Photo", type=["png", "jpg", "jpeg"])
-    inauguration_photo = st.file_uploader("Upload inauguration Photo", type=["png", "jpg", "jpeg"])
-    if st.button("Update Photos"):
-        if chairman_photo:
-            chairman_base64 = save_uploaded_image(chairman_photo)
+    # Update Chairman and Principal Photos
+st.subheader("Update Photos")
+chairman_photo = st.file_uploader("Upload Chairman Photo", type=["png", "jpg", "jpeg"])
+principal_photo = st.file_uploader("Upload Principal Photo", type=["png", "jpg", "jpeg"])
+inauguration_photo = st.file_uploader("Upload Inauguration Photo", type=["png", "jpg", "jpeg"])
+
+if st.button("Update Photos"):
+    updates_made = False
+
+    if chairman_photo:
+        chairman_base64 = save_uploaded_image(chairman_photo)
+        if chairman_base64:
             data['chairman_photo'] = chairman_base64
-        if principal_photo:
-            principal_base64 = save_uploaded_image(principal_photo)
+            updates_made = True
+    if principal_photo:
+        principal_base64 = save_uploaded_image(principal_photo)
+        if principal_base64:
             data['principal_photo'] = principal_base64
-        if inauguration_photo:
-            inauguration_base64 = save_uploaded_image(inauguration_photo)
+            updates_made = True
+    if inauguration_photo:
+        inauguration_base64 = save_uploaded_image(inauguration_photo)
+        if inauguration_base64:
             data['inauguration_photo'] = inauguration_base64
+            updates_made = True
+
+    if updates_made:
         save_data(data)
         st.success("Photos updated successfully!")
-        st.rerun()
+        # Refresh the page (Streamlit's way to reload components)
+        st.experimental_rerun()
+    else:
+        st.warning("No photos were uploaded. Please upload at least one photo to update.")
+
     
     # Modify News Section
     st.subheader("Modify News Section")
