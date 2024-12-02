@@ -130,13 +130,17 @@ def home(data):
 def about_us(data):
     col1, col2 = st.columns([1, 4])
     with col1:
-        display_school_logo(data)
+        display_school_logo(data)  # Assuming this function displays the school's logo
     with col2:
-        # Display the "About Us" content
-    if 'about_us' in data and data['about_us']:
         st.title("About Us")
-        st.markdown(data['about_us'])  # Display the About Us content
     
+    # Display the About Us content from the data
+    if 'about_us' in data and data['about_us']:
+        st.write(data['about_us'])  # Show the updated content
+    else:
+        # If 'about_us' is empty, show default text
+        st.write("St. Xavier's High School is committed to providing quality education and nurturing young minds.")
+
 
 # Contact Us page
 def contact_us(data):
@@ -203,10 +207,23 @@ def admin_login():
         else:
             st.error("Invalid credentials")
 
-# Admin panel function
+# Admin Panel
 def admin_panel(data):
     if st.session_state.logged_in:
         st.title("Admin Panel")
+
+        # Modify About Us Content
+        st.subheader("Modify About Us Content")
+        about_us_content = st.text_area("About Us Content", data.get('about_us', ''))  # Display current content if exists
+        if st.button("Update About Us"):
+            if about_us_content:
+                data['about_us'] = about_us_content  # Save the updated content
+                save_data(data)
+                st.success("About Us content updated successfully!")
+                st.rerun()
+
+        # Other sections for modifying school logo, events, etc.
+
 
         # Modify School Logo
         st.subheader("Modify School Logo")
