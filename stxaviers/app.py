@@ -83,14 +83,23 @@ def home(data):
     col1, col2 = st.columns(2)
     with col1:
         if data['chairman_photo']:
-            st.image(base64.b64decode(data['chairman_photo']), caption="E. Anthony Reddy sir (Chairman)")
+            st.image(base64.b64decode(data['chairman_photo']), caption="E. Anthony Reddy sir (Chairman sir)")
         else:
             st.write("Chairman photo not available")
     with col2:
         if data['principal_photo']:
-            st.image(base64.b64decode(data['principal_photo']), caption="G. Mar Reddy sir (Principal)")
+            st.image(base64.b64decode(data['principal_photo']), caption="G. Mar Reddy sir (Principal sir)")
         else:
             st.write("Principal photo not available")
+
+    st.subheader("School Inauguration")
+    col1 = st.coloumns(3)
+    with col1:
+        if data['inauguration_photo']:
+            st.image(base64.b64decode(data['inauguration_photo']))
+        else:
+            st.write("inauguration photo not available")
+        
 
 # About Us page
 def about_us(data):
@@ -233,6 +242,7 @@ def admin_panel(data):
     st.subheader("Update Photos")
     chairman_photo = st.file_uploader("Upload Chairman Photo", type=["png", "jpg", "jpeg"])
     principal_photo = st.file_uploader("Upload Principal Photo", type=["png", "jpg", "jpeg"])
+    inauguration_photo = st.file_uploader("Upload inauguration Photo", type=["png", "jpg", "jpeg"])
     if st.button("Update Photos"):
         if chairman_photo:
             chairman_base64 = save_uploaded_image(chairman_photo)
@@ -240,6 +250,9 @@ def admin_panel(data):
         if principal_photo:
             principal_base64 = save_uploaded_image(principal_photo)
             data['principal_photo'] = principal_base64
+        if inauguration_photo:
+            inauguration_base64 = save_uploaded_image(inauguration_photo)
+            data['inauguration_photo'] = inauguration_base64
         save_data(data)
         st.success("Photos updated successfully!")
         st.rerun()
