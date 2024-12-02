@@ -53,7 +53,7 @@ def save_data(data):
     except IOError as e:
         st.error(f"Error saving data: {e}")
 
-# Save uploaded image
+# Function to save uploaded images as base64
 def save_uploaded_image(uploaded_file):
     if uploaded_file is not None:
         try:
@@ -66,7 +66,6 @@ def save_uploaded_image(uploaded_file):
             st.error(f"Error processing the uploaded image: {e}")
             return ""
     return ""
-
 # Add this line to initialize data
 data = load_data()  # Ensure `data` is loaded at the start of the script
 
@@ -188,7 +187,7 @@ def news(data):
         st.write(news_item)
         st.write("---")
 
-# Admin login
+# Admin login function
 def admin_login():
     st.title("Admin Login")
     username = st.text_input("Username")
@@ -201,122 +200,127 @@ def admin_login():
         else:
             st.error("Invalid credentials")
 
-# Admin panel
+# Admin panel function
 def admin_panel(data):
-    st.title("Admin Panel")
-    
-    # Modify School Logo
-    st.subheader("Modify School Logo")
-    school_logo = st.file_uploader("Upload School Logo", type=["png", "jpg", "jpeg"])
-    if st.button("Update School Logo"):
-        if school_logo:
-            logo_base64 = save_uploaded_image(school_logo)
-            data['school_logo'] = logo_base64
+    if st.session_state.logged_in:
+        st.title("Admin Panel")
+
+        # Modify School Logo
+        st.subheader("Modify School Logo")
+        school_logo = st.file_uploader("Upload School Logo", type=["png", "jpg", "jpeg"])
+        if st.button("Update School Logo"):
+            if school_logo:
+                logo_base64 = save_uploaded_image(school_logo)
+                data['school_logo'] = logo_base64
+                save_data(data)
+                st.success("School logo updated successfully!")
+                st.rerun()
+
+        # Modify Events
+        st.subheader("Modify Events")
+        event_name = st.text_input("Event Name")
+        event_date = st.date_input("Event Date")
+        event_description = st.text_area("Event Description")
+        if st.button("Add Event"):
+            data['events'].append({
+                'name': event_name,
+                'date': str(event_date),
+                'description': event_description
+            })
             save_data(data)
-            st.success("School logo updated successfully!")
+            st.success("Event added successfully!")
             st.rerun()
-    
-    # Modify Events
-    st.subheader("Modify Events")
-    event_name = st.text_input("Event Name")
-    event_date = st.date_input("Event Date")
-    event_description = st.text_area("Event Description")
-    if st.button("Add Event"):
-        data['events'].append({
-            'name': event_name,
-            'date': str(event_date),
-            'description': event_description
-        })
-        save_data(data)
-        st.success("Event added successfully!")
-        st.rerun()
-    
-    # Delete Events
-    st.subheader("Delete Events")
-    event_to_delete = st.selectbox("Select Event to Delete", [f"{event['name']} - {event['date']}" for event in data['events']])
-    if st.button("Delete Event"):
-        event_name, event_date = event_to_delete.split(' - ')
-        data['events'] = [event for event in data['events'] if not (event['name'] == event_name and event['date'] == event_date)]
-        save_data(data)
-        st.success("Event deleted successfully!")
-        st.rerun()
-    
-    # Modify Academic Programs
-    st.subheader("Modify Academic Programs")
-    program = st.selectbox("Select Program", list(data['academic_programs'].keys()))
-    program_description = st.text_area("Program Description", data['academic_programs'][program]['description'])
-    program_logo = st.file_uploader(f"Upload {program} Logo", type=["png", "jpg", "jpeg"])
-    if st.button("Update Program"):
-        data['academic_programs'][program]['description'] = program_description
-        if program_logo:
-            logo_base64 = save_uploaded_image(program_logo)
-            data['academic_programs'][program]['logo'] = logo_base64
-        save_data(data)
-        st.success("Program updated successfully!")
-        st.rerun()
-    
-    # Modify Home Page Content
-    st.subheader("Modify Home Page Content")
-    home_content = st.text_area("Home Page Content", data['home_content'])
-    if st.button("Update Home Content"):
-        data['home_content'] = home_content
-        save_data(data)
-        st.success("Home content updated successfully!")
-        st.rerun()
-    
-    # Update Chairman and Principal Photos
-    # Update Chairman and Principal Photos
-st.subheader("Update Photos")
-chairman_photo = st.file_uploader("Upload Chairman Photo", type=["png", "jpg", "jpeg"])
-principal_photo = st.file_uploader("Upload Principal Photo", type=["png", "jpg", "jpeg"])
-inauguration_photo = st.file_uploader("Upload Inauguration Photo", type=["png", "jpg", "jpeg"])
 
-if st.button("Update Photos"):
-    updates_made = False
+        # Delete Events
+        st.subheader("Delete Events")
+        event_to_delete = st.selectbox("Select Event to Delete", [f"{event['name']} - {event['date']}" for event in data['events']])
+        if st.button("Delete Event"):
+            event_name, event_date = event_to_delete.split(' - ')
+            data['events'] = [event for event in data['events'] if not (event['name'] == event_name and event['date'] == event_date)]
+            save_data(data)
+            st.success("Event deleted successfully!")
+            st.rerun()
 
-    if chairman_photo:
-        chairman_base64 = save_uploaded_image(chairman_photo)
-        if chairman_base64:
-            data['chairman_photo'] = chairman_base64
-            updates_made = True
-    if principal_photo:
-        principal_base64 = save_uploaded_image(principal_photo)
-        if principal_base64:
-            data['principal_photo'] = principal_base64
-            updates_made = True
-    if inauguration_photo:
-        inauguration_base64 = save_uploaded_image(inauguration_photo)
-        if inauguration_base64:
-            data['inauguration_photo'] = inauguration_base64
-            updates_made = True
+        # Modify Academic Programs
+        st.subheader("Modify Academic Programs")
+        program = st.selectbox("Select Program", list(data['academic_programs'].keys()))
+        program_description = st.text_area("Program Description", data['academic_programs'][program]['description'])
+        program_logo = st.file_uploader(f"Upload {program} Logo", type=["png", "jpg", "jpeg"])
+        if st.button("Update Program"):
+            data['academic_programs'][program]['description'] = program_description
+            if program_logo:
+                logo_base64 = save_uploaded_image(program_logo)
+                data['academic_programs'][program]['logo'] = logo_base64
+            save_data(data)
+            st.success("Program updated successfully!")
+            st.rerun()
 
-    if updates_made:
-        save_data(data)
-        st.success("Photos updated successfully!")
-        # Refresh the page (Streamlit's way to reload components)
-        st.rerun()
-    
-        
+        # Modify Home Page Content
+        st.subheader("Modify Home Page Content")
+        home_content = st.text_area("Home Page Content", data['home_content'])
+        if st.button("Update Home Content"):
+            data['home_content'] = home_content
+            save_data(data)
+            st.success("Home content updated successfully!")
+            st.rerun()
 
-    
-    # Modify News Section
-    st.subheader("Modify News Section")
-    news_item = st.text_input("Add News Item")
-    if st.button("Add News"):
-        data['news'].insert(0, news_item)  # Add new item at the beginning
-        save_data(data)
-        st.success("News item added successfully!")
-        st.rerun()
-    
-    # Delete News Item
-    st.subheader("Delete News Item")
-    news_to_delete = st.selectbox("Select News Item to Delete", data['news'])
-    if st.button("Delete News Item"):
-        data['news'].remove(news_to_delete)
-        save_data(data)
-        st.success("News item deleted successfully!")
-        st.rerun()
+        # Update Chairman, Principal, and Inauguration Photos
+        st.subheader("Update Photos")
+        chairman_photo = st.file_uploader("Upload Chairman Photo", type=["png", "jpg", "jpeg"])
+        principal_photo = st.file_uploader("Upload Principal Photo", type=["png", "jpg", "jpeg"])
+        inauguration_photo = st.file_uploader("Upload Inauguration Photo", type=["png", "jpg", "jpeg"])
 
+        if st.button("Update Photos"):
+            updates_made = False
+
+            # Chairman Photo Update
+            if chairman_photo:
+                chairman_base64 = save_uploaded_image(chairman_photo)
+                if chairman_base64:
+                    data['chairman_photo'] = chairman_base64
+                    updates_made = True
+
+            # Principal Photo Update
+            if principal_photo:
+                principal_base64 = save_uploaded_image(principal_photo)
+                if principal_base64:
+                    data['principal_photo'] = principal_base64
+                    updates_made = True
+
+            # Inauguration Photo Update
+            if inauguration_photo:
+                inauguration_base64 = save_uploaded_image(inauguration_photo)
+                if inauguration_base64:
+                    data['inauguration_photo'] = inauguration_base64
+                    updates_made = True
+
+            # Save updated data and show success message
+            if updates_made:
+                save_data(data)
+                st.success("Photos updated successfully!")
+                st.rerun()
+            else:
+                st.warning("No photos were uploaded. Please upload at least one photo to update.")
+                
+        # Modify News Section
+        st.subheader("Modify News Section")
+        news_item = st.text_input("Add News Item")
+        if st.button("Add News"):
+            data['news'].insert(0, news_item)  # Add new item at the beginning
+            save_data(data)
+            st.success("News item added successfully!")
+            st.rerun()
+
+        # Delete News Item
+        st.subheader("Delete News Item")
+        news_to_delete = st.selectbox("Select News Item to Delete", data['news'])
+        if st.button("Delete News Item"):
+            data['news'].remove(news_to_delete)
+            save_data(data)
+            st.success("News item deleted successfully!")
+            st.rerun()
+
+# You would need to call this admin panel in your main function (e.g., when logged in).
 # Main function
 def main():
     # Load data
