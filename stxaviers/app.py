@@ -10,14 +10,19 @@ import io
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 
-# File paths
-DATA_FILE = 'stxaviers/school_data.json'
+# Define folder and data file
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Get current script directory
+DATA_FOLDER = os.path.join(BASE_DIR, "stxaviers")  # Path to stxaviers folder
+DATA_FILE = os.path.join(DATA_FOLDER, "data.json")  # Path to data.json
+
+# Ensure the folder exists
+os.makedirs(DATA_FOLDER, exist_ok=True)
 
 # Load data
 def load_data():
     if os.path.exists(DATA_FILE):
         try:
-            with open(DATA_FILE, 'r') as file:
+            with open(DATA_FILE, 'r', encoding='utf-8') as file:
                 return json.load(file)
         except json.JSONDecodeError:
             st.error("Error reading the data file. Initializing with default data.")
@@ -42,18 +47,26 @@ def load_data():
 
 # Save data
 def save_data(data):
-    with open(DATA_FILE, 'w') as file:
-        json.dump(data, file)
+    try:
+        with open(DATA_FILE, 'w', encoding='utf-8') as file:
+            json.dump(data, file)
+    except IOError as e:
+        st.error(f"Error saving data: {e}")
 
 # Save uploaded image
 def save_uploaded_image(uploaded_file):
     if uploaded_file is not None:
-        img = Image.open(uploaded_file)
-        img_byte_arr = io.BytesIO()
-        img.save(img_byte_arr, format='PNG')
-        img_byte_arr = img_byte_arr.getvalue()
-        return base64.b64encode(img_byte_arr).decode()
+        try:
+            img = Image.open(uploaded_file)
+            img_byte_arr = io.BytesIO()
+            img.save(img_byte_arr, format='PNG')
+            img_byte_arr = img_byte_arr.getvalue()
+            return base64.b64encode(img_byte_arr).decode()
+        except Exception as e:
+            st.error(f"Error processing the uploaded image: {e}")
+            return ""
     return ""
+
 
 # Navigation
 def navigation():
