@@ -11,7 +11,7 @@ if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 
 # File paths
-DATA_FILE = 'school_data.json'
+DATA_FILE = 'stxaviers/school_data.json'
 
 # Load data
 def load_data():
