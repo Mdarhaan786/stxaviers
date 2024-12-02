@@ -94,7 +94,7 @@ def home(data):
             st.write("Principal photo not available")
 
     st.subheader("School Inauguration")
-    col1 = st.coloumns(3)
+    col1 = st.columns(3)
     with col1:
         if data['inauguration_photo']:
             st.image(base64.b64decode(data['inauguration_photo']))
