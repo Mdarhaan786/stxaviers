@@ -70,22 +70,6 @@ def save_uploaded_image(uploaded_file):
 # Add this line to initialize data
 data = load_data()  # Ensure `data` is loaded at the start of the script
 
-# Main application logic
-st.title("St. Xavier's App")
-
-# Example usage of `data`
-st.subheader("School Inauguration")
-if data.get('inauguration_photo'):  # Safely access the photo
-    st.image(base64.b64decode(data['inauguration_photo']), caption="Inauguration Photo")
-else:
-    st.write("Inauguration photo not available")
-
-# Example of saving updates to data
-if st.button("Save Updates"):
-    # Update data as needed, e.g., changing 'home_content'
-    data['home_content'] = "Updated home content"
-    save_data(data)
-    st.success("Data saved successfully!")
 
 
 
