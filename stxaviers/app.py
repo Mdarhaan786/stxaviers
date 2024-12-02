@@ -132,8 +132,11 @@ def about_us(data):
     with col1:
         display_school_logo(data)
     with col2:
+        # Display the "About Us" content
+    if 'about_us' in data and data['about_us']:
         st.title("About Us")
-    st.write("St. Xavier's High School is committed to providing quality education and nurturing young minds.")
+        st.markdown(data['about_us'])  # Display the About Us content
+    
 
 # Contact Us page
 def contact_us(data):
