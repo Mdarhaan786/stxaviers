@@ -146,12 +146,19 @@ def about_us(data):
 def contact_us(data):
     col1, col2 = st.columns([1, 4])
     with col1:
-        display_school_logo(data)
+        display_school_logo(data)  # Assuming this function displays the school's logo
     with col2:
         st.title("Contact Us")
-    st.write("Email: info@stxaviers.edu")
-    st.write("Phone: +1234567890")
-    st.write("Address: 123 Education Street, Knowledge City, 12345")
+
+    # Display the Contact Us content dynamically from the data
+    if 'contact_us' in data and data['contact_us']:
+        st.write(data['contact_us'])  # Show the updated content
+    else:
+        # If 'contact_us' is empty, show default contact information
+        st.write("Email: info@stxaviers.edu")
+        st.write("Phone: +1234567890")
+        st.write("Address: 123 Education Street, Knowledge City, 12345")
+
 
 # Academic Programs page
 def academic_programs(data):
@@ -234,6 +241,16 @@ def admin_panel(data):
                 data['school_logo'] = logo_base64
                 save_data(data)
                 st.success("School logo updated successfully!")
+                st.rerun()
+
+        # Modify Contact Us Content
+        st.subheader("Modify Contact Us Content")
+        contact_us_content = st.text_area("Contact Us Content", data.get('contact_us', ''))  # Display current content if exists
+        if st.button("Update Contact Us"):
+            if contact_us_content:
+                data['contact_us'] = contact_us_content  # Save the updated content
+                save_data(data)
+                st.success("Contact Us content updated successfully!")
                 st.rerun()
 
         # Modify Events
