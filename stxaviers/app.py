@@ -301,6 +301,18 @@ def admin_panel(data):
                 st.rerun()
             else:
                 st.warning("No photos were uploaded. Please upload at least one photo to update.")
+
+        # Modify About Us Content
+        st.subheader("Modify About Us Content")
+        about_us_content = st.text_area("About Us Content", data.get('about_us', ''))  # Display current content if exists
+        if st.button("Update About Us"):
+            if about_us_content:
+                data['about_us'] = about_us_content  # Save the updated content
+                save_data(data)
+                st.success("About Us content updated successfully!")
+                st.rerun()
+
+        # Other existing sections like Modify School Logo, Modify Events, etc
                 
         # Modify News Section
         st.subheader("Modify News Section")
