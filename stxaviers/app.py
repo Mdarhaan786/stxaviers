@@ -35,6 +35,7 @@ def load_data():
         'home_content': '',
         'chairman_photo': '',
         'principal_photo': '',
+        'inauguration_photo': '',
         'news': [],
         'school_logo': ''
     }
