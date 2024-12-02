@@ -294,9 +294,9 @@ if st.button("Update Photos"):
         save_data(data)
         st.success("Photos updated successfully!")
         # Refresh the page (Streamlit's way to reload components)
-        st.experimental_rerun()
-    else:
-        st.warning("No photos were uploaded. Please upload at least one photo to update.")
+        st.rerun()
+    
+        
 
     
     # Modify News Section
