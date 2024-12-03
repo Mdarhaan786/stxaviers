@@ -5,11 +5,11 @@ import os
 import base64
 from PIL import Image
 import io
-import smtplib
 
 st.set_page_config(
     page_title="St. Xavier's High School",
     page_icon="stxaviers_icon.png",  # Replace with your image path
+    layout="wide",
 )
 
 # Initialize session state
@@ -19,7 +19,7 @@ if 'logged_in' not in st.session_state:
 # Define folder and data file
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Get current script directory
 DATA_FOLDER = os.path.join(BASE_DIR, "stxaviers")  # Path to stxaviers folder
-DATA_FILE = os.path.join(DATA_FOLDER, "school.json")  # Path to data.json
+DATA_FILE = os.path.join(DATA_FOLDER, "data.json")  # Path to data.json
 
 # Ensure the folder exists
 os.makedirs(DATA_FOLDER, exist_ok=True)
@@ -159,69 +159,11 @@ def contact_us(data):
     # Display the Contact Us content dynamically from the data
     if 'contact_us' in data and data['contact_us']:
         st.write(data['contact_us'])  # Show the updated content
-        
     else:
-        st.write("    ")
-
-        # Contact Us Form
-def contact_us_form(data):
-    
-    with st.form(key="contact_form"):
-        name = st.text_input("Your Name")
-        email = st.text_input("Your Email")
-        message = st.text_area("Your Message")
-        submitted = st.form_submit_button("Submit")
-
-        if submitted:
-            if name and email and message:
-                new_message = {
-                    "name": name,
-                    "email": email,
-                    "message": message
-                }
-
-                # Load current data from school.json
-                current_data = load_data()
-
-                # Add the new message to the contact messages section (or create it if it doesn't exist)
-                if 'contact_messages' not in current_data:
-                    current_data['contact_messages'] = []
-                current_data['contact_messages'].append(new_message)
-
-                # Save the updated data back to school.json
-                save_data(current_data)
-
-                st.success("Your message has been submitted successfully!")
-            else:
-                st.error("Please fill out all fields.")    
-
-# Function to save new contact message to the JSON file
-def save_contact_message(name, email, message):
-    try:
-        # Load the existing data (or initialize if the file doesn't exist)
-        if os.path.exists("school1.json"):
-            with open("school1.json", "r", encoding="utf-8") as file:
-                data = json.load(file)
-        else:
-            data = {"contact_messages": []}  # Initialize if the file doesn't exist
-
-        # Create a new message
-        new_message = {
-            "name": name,
-            "email": email,
-            "message": message
-        }
-
-        # Append the new message to the list of messages
-        data["contact_messages"].append(new_message)
-
-        # Save the updated data back to the JSON file
-        with open("school1.json", "w", encoding="utf-8") as file:
-            json.dump(data, file, indent=4)
-
-        print("Message saved successfully.")
-    except Exception as e:
-        print(f"Error saving message: {str(e)}")
+        # If 'contact_us' is empty, show default contact information
+        st.write("Email: info@stxaviers.edu")
+        st.write("Phone: +1234567890")
+        st.write("Address: 123 Education Street, Knowledge City, 12345")
 
 
 # Academic Programs page
@@ -279,33 +221,10 @@ def admin_login():
             st.error("Invalid credentials")
 
 # Admin Panel
-# Admin Panel
 def admin_panel(data):
     if st.session_state.logged_in:
         st.title("Admin Panel")
 
-        # Function to load contact messages from school1.json
-        # Function to load and return contact messages
-def load_contact_messages():
-    try:
-        with open("school1.json", "r", encoding="utf-8") as file:
-            data = json.load(file)
-
-        # Return the list of contact messages
-        return data.get("contact_messages", [])
-    
-    except FileNotFoundError:
-        print("school1.json file not found.")
-        return []
-    
-    except json.JSONDecodeError:
-        print("Error decoding JSON data.")
-        return []
-        # Section to view submitted contact messages
-        st.subheader("View Contact Messages")
-        if st.button("Load Contact Messages"):
-            load_contact_messages()  # Call the function to load and display messages
-        
         # Modify About Us Content
         st.subheader("Modify About Us Content")
         about_us_content = st.text_area("About Us Content", data.get('about_us', ''))  # Display current content if exists
