@@ -9,7 +9,6 @@ import io
 st.set_page_config(
     page_title="St. Xavier's High School",
     page_icon="school_logo.png",  # Replace with the name of your saved logo file
-    layout="wide"
 )
 
 
