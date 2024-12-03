@@ -164,7 +164,7 @@ def contact_us(data):
         st.write("    ")
 
         # Contact Us Form
-def contact_us(data2):
+def contact_us_form(data):
     
     with st.form(key="contact_form"):
         name = st.text_input("Your Name")
@@ -251,38 +251,35 @@ def admin_login():
             st.error("Invalid credentials")
 
 # Admin Panel
+# Admin Panel
 def admin_panel(data):
     if st.session_state.logged_in:
         st.title("Admin Panel")
 
-        # Function to load contact messages from school.json
+        # Function to load contact messages from school1.json
         def load_contact_messages():
-            try:
-                # Load the data from school.json
-                if os.path.exists("school1.json"):
-                    with open("school1.json", "r", encoding="utf-8") as file:
-                        data2 = json.load(file)
+    try:
+        # Open the JSON file and read its content
+        with open("school1.json", "r", encoding="utf-8") as file:
+            data = json.load(file)
 
-                    # Check if the 'contact_messages' key exists and display messages
-                    if 'contact_messages' in data:
-                        for message in data['contact_messages']:
-                            st.write(f"### Message from {message['name']}")
-                            st.write(f"**Email**: {message['email']}")
-                            st.write(f"**Message**: {message['message']}")
-                            st.write("---")  # Separator for better readability
-                    else:
-                        st.write("No messages found.")
-                else:
-                    st.error("school.json file not found.")
-            
-            except json.JSONDecodeError:
-                st.error("Error reading the messages. Please check the JSON file.")
-
+        # Return the list of contact messages
+        return data.get("contact_messages", [])
+    
+    except FileNotFoundError:
+        # If the file is not found, return an empty list
+        print("school1.json file not found.")
+        return []
+    
+    except json.JSONDecodeError:
+        # Handle any errors while decoding the JSON
+        print("Error decoding JSON data.")
+        return []
         # Section to view submitted contact messages
         st.subheader("View Contact Messages")
         if st.button("Load Contact Messages"):
             load_contact_messages()  # Call the function to load and display messages
-
+        
         # Modify About Us Content
         st.subheader("Modify About Us Content")
         about_us_content = st.text_area("About Us Content", data.get('about_us', ''))  # Display current content if exists
