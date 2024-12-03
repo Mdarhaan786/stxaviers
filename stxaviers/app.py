@@ -5,6 +5,7 @@ import os
 import base64
 from PIL import Image
 import io
+import smtplib
 
 st.set_page_config(
     page_title="St. Xavier's High School",
@@ -19,7 +20,7 @@ if 'logged_in' not in st.session_state:
 # Define folder and data file
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Get current script directory
 DATA_FOLDER = os.path.join(BASE_DIR, "stxaviers")  # Path to stxaviers folder
-DATA_FILE = os.path.join(DATA_FOLDER, "data.json")  # Path to data.json
+DATA_FILE = os.path.join(DATA_FOLDER, "school.json")  # Path to data.json
 
 # Ensure the folder exists
 os.makedirs(DATA_FOLDER, exist_ok=True)
@@ -159,11 +160,27 @@ def contact_us(data):
     # Display the Contact Us content dynamically from the data
     if 'contact_us' in data and data['contact_us']:
         st.write(data['contact_us'])  # Show the updated content
-    else:
-        # If 'contact_us' is empty, show default contact information
-        st.write("Email: info@stxaviers.edu")
-        st.write("Phone: +1234567890")
-        st.write("Address: 123 Education Street, Knowledge City, 12345")
+    else:.
+
+        # Contact Form
+    st.subheader("💬 Have Questions? Let’s Connect!")
+    with st.form("contact_form"):
+        name = st.text_input("Your Name", placeholder="Enter your name 🔤")
+        email = st.text_input("Your Email", placeholder="Enter your email ✉️")
+        message = st.text_area("Your Message", placeholder="Type your message here 📝")
+        submitted = st.form_submit_button("Submit")
+        if submitted:
+    new_message = {
+        "name": name,
+        "email": email,
+        "message": message
+    }
+    with open("school.json", "a") as file:
+        json.dump(new_message, file)
+        file.write("\n")  # Add a newline for each message
+    st.success("Thank you for reaching out! We’ll get back to you as soon as possible. 🌟")
+
+                                 
 
 
 # Academic Programs page
@@ -224,6 +241,29 @@ def admin_login():
 def admin_panel(data):
     if st.session_state.logged_in:
         st.title("Admin Panel")
+        
+
+    def load_contact_messages():
+    try:
+        with open("school.json", "r") as file:
+            # Read all the messages in the file
+            messages = file.readlines()
+
+            # Display each message
+            for msg in messages:
+                message = json.loads(msg)  # Convert each line to a Python dictionary
+                st.write(f"### Message from {message['name']}")
+                st.write(f"**Email**: {message['email']}")
+                st.write(f"**Message**: {message['message']}")
+                st.write("---")  # Separator for better readability
+    except FileNotFoundError:
+        st.error("No messages found. Please submit a message first.")
+    except json.JSONDecodeError:
+        st.error("Error reading the messages. Please check the JSON file.")
+        # Section to view submitted contact messages
+    st.subheader("View Contact Messages")
+    if st.button("Load Contact Messages"):
+        load_contact_messages()  # Call the function to load and display messages
 
         # Modify About Us Content
         st.subheader("Modify About Us Content")
