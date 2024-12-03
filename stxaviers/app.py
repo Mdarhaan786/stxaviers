@@ -164,7 +164,7 @@ def contact_us(data):
         st.write("    ")
 
         # Contact Us Form
-def contact_us(data):
+def contact_us(data2):
     
     with st.form(key="contact_form"):
         name = st.text_input("Your Name")
@@ -259,9 +259,9 @@ def admin_panel(data):
         def load_contact_messages():
             try:
                 # Load the data from school.json
-                if os.path.exists("school.json"):
+                if os.path.exists("school1.json"):
                     with open("school1.json", "r", encoding="utf-8") as file:
-                        data = json.load(file)
+                        data2 = json.load(file)
 
                     # Check if the 'contact_messages' key exists and display messages
                     if 'contact_messages' in data:
