@@ -255,29 +255,34 @@ def admin_login():
 def admin_panel(data):
     if st.session_state.logged_in:
         st.title("Admin Panel")
-        
 
-    def load_contact_messages():
-    try:
-        with open("school.json", "r") as file:
-            # Read all the messages in the file
-            messages = file.readlines()
+        # Function to load contact messages from school.json
+        def load_contact_messages():
+            try:
+                # Load the data from school.json
+                if os.path.exists("school.json"):
+                    with open("school.json", "r", encoding="utf-8") as file:
+                        data = json.load(file)
 
-            # Display each message
-            for msg in messages:
-                message = json.loads(msg)  # Convert each line to a Python dictionary
-                st.write(f"### Message from {message['name']}")
-                st.write(f"**Email**: {message['email']}")
-                st.write(f"**Message**: {message['message']}")
-                st.write("---")  # Separator for better readability
-    except FileNotFoundError:
-        st.error("No messages found. Please submit a message first.")
-    except json.JSONDecodeError:
-        st.error("Error reading the messages. Please check the JSON file.")
+                    # Check if the 'contact_messages' key exists and display messages
+                    if 'contact_messages' in data:
+                        for message in data['contact_messages']:
+                            st.write(f"### Message from {message['name']}")
+                            st.write(f"**Email**: {message['email']}")
+                            st.write(f"**Message**: {message['message']}")
+                            st.write("---")  # Separator for better readability
+                    else:
+                        st.write("No messages found.")
+                else:
+                    st.error("school.json file not found.")
+            
+            except json.JSONDecodeError:
+                st.error("Error reading the messages. Please check the JSON file.")
+
         # Section to view submitted contact messages
-    st.subheader("View Contact Messages")
-    if st.button("Load Contact Messages"):
-        load_contact_messages()  # Call the function to load and display messages
+        st.subheader("View Contact Messages")
+        if st.button("Load Contact Messages"):
+            load_contact_messages()  # Call the function to load and display messages
 
         # Modify About Us Content
         st.subheader("Modify About Us Content")
