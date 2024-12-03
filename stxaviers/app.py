@@ -9,8 +9,7 @@ import smtplib
 
 st.set_page_config(
     page_title="St. Xavier's High School",
-    page_icon="stxaviers/stxaviers_icon.png",  # Replace with your image path
-    layout="wide",
+    page_icon="stxaviers_icon.png",  # Replace with your image path
 )
 
 # Initialize session state
@@ -261,7 +260,7 @@ def admin_panel(data):
             try:
                 # Load the data from school.json
                 if os.path.exists("school.json"):
-                    with open("school.json", "r", encoding="utf-8") as file:
+                    with open("school1.json", "r", encoding="utf-8") as file:
                         data = json.load(file)
 
                     # Check if the 'contact_messages' key exists and display messages
