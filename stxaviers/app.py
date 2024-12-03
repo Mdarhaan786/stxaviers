@@ -6,6 +6,13 @@ import base64
 from PIL import Image
 import io
 
+st.set_page_config(
+    page_title="St. Xavier's High School",
+    page_icon="school_logo.png",  # Replace with the name of your saved logo file
+    layout="wide"
+)
+
+
 # Initialize session state
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
