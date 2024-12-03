@@ -193,7 +193,35 @@ def contact_us_form(data):
 
                 st.success("Your message has been submitted successfully!")
             else:
-                st.error("Please fill out all fields.")                         
+                st.error("Please fill out all fields.")    
+
+# Function to save new contact message to the JSON file
+def save_contact_message(name, email, message):
+    try:
+        # Load the existing data (or initialize if the file doesn't exist)
+        if os.path.exists("school1.json"):
+            with open("school1.json", "r", encoding="utf-8") as file:
+                data = json.load(file)
+        else:
+            data = {"contact_messages": []}  # Initialize if the file doesn't exist
+
+        # Create a new message
+        new_message = {
+            "name": name,
+            "email": email,
+            "message": message
+        }
+
+        # Append the new message to the list of messages
+        data["contact_messages"].append(new_message)
+
+        # Save the updated data back to the JSON file
+        with open("school1.json", "w", encoding="utf-8") as file:
+            json.dump(data, file, indent=4)
+
+        print("Message saved successfully.")
+    except Exception as e:
+        print(f"Error saving message: {str(e)}")
 
 
 # Academic Programs page
@@ -257,9 +285,9 @@ def admin_panel(data):
         st.title("Admin Panel")
 
         # Function to load contact messages from school1.json
-        def load_contact_messages():
+        # Function to load and return contact messages
+def load_contact_messages():
     try:
-        # Open the JSON file and read its content
         with open("school1.json", "r", encoding="utf-8") as file:
             data = json.load(file)
 
@@ -267,12 +295,10 @@ def admin_panel(data):
         return data.get("contact_messages", [])
     
     except FileNotFoundError:
-        # If the file is not found, return an empty list
         print("school1.json file not found.")
         return []
     
     except json.JSONDecodeError:
-        # Handle any errors while decoding the JSON
         print("Error decoding JSON data.")
         return []
         # Section to view submitted contact messages
