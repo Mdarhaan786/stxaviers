@@ -6,12 +6,10 @@ import base64
 from PIL import Image
 import io
 
-with open("stxaviers_icon.png", "rb") as image_file:
-    base64_icon = base64.b64encode(image_file.read()).decode()
-
 st.set_page_config(
     page_title="St. Xavier's High School",
-    page_icon=base64_icon,
+    page_icon="stxaviers_icon.png",  # Replace with your image path
+    layout="wide",
 )
 
 # Initialize session state
