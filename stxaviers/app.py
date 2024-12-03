@@ -170,7 +170,7 @@ def contact_us(data):
         name = st.text_input("Your Name", placeholder="Enter your name 🔤")
         email = st.text_input("Your Email", placeholder="Enter your email ✉️")
         message = st.text_area("Your Message", placeholder="Type your message here 📝")
-       submitted = st.form_submit_button("Submit"
+       submitted = st.form_submit_button("Submit")
         if submitted:
     new_message = {
         "name": name,
