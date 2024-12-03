@@ -160,7 +160,7 @@ def contact_us(data):
     # Display the Contact Us content dynamically from the data
     if 'contact_us' in data and data['contact_us']:
         st.write(data['contact_us'])  # Show the updated content
-    else:.
+    else:
 
         # Contact Form
     st.subheader("💬 Have Questions? Let’s Connect!")
