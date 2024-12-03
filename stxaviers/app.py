@@ -9,7 +9,7 @@ import smtplib
 
 st.set_page_config(
     page_title="St. Xavier's High School",
-    page_icon="stxaviers_icon.png",  # Replace with your image path
+    page_icon="stxaviers/stxaviers_icon.png",  # Replace with your image path
     layout="wide",
 )
 
@@ -164,26 +164,37 @@ def contact_us(data):
     else:
         st.write("    ")
 
-        # Contact Form
-    st.subheader("💬 Have Questions? Let’s Connect!")
-    with st.form("contact_form"):
-        name = st.text_input("Your Name", placeholder="Enter your name 🔤")
-        email = st.text_input("Your Email", placeholder="Enter your email ✉️")
-        message = st.text_area("Your Message", placeholder="Type your message here 📝")
-       submitted = st.form_submit_button("Submit")
-        if submitted:
-    new_message = {
-        "name": name,
-        "email": email,
-        "message": message
-    }
-    with open("school.json", "a") as file:
-        json.dump(new_message, file)
-        file.write("\n")  # Add a newline for each message
-    st.success("Thank you for reaching out! We’ll get back to you as soon as possible. 🌟")
+        # Contact Us Form
+def contact_us(data):
+    
+    with st.form(key="contact_form"):
+        name = st.text_input("Your Name")
+        email = st.text_input("Your Email")
+        message = st.text_area("Your Message")
+        submitted = st.form_submit_button("Submit")
 
-       else:
-        st.error("Please fill out all fields.")                          
+        if submitted:
+            if name and email and message:
+                new_message = {
+                    "name": name,
+                    "email": email,
+                    "message": message
+                }
+
+                # Load current data from school.json
+                current_data = load_data()
+
+                # Add the new message to the contact messages section (or create it if it doesn't exist)
+                if 'contact_messages' not in current_data:
+                    current_data['contact_messages'] = []
+                current_data['contact_messages'].append(new_message)
+
+                # Save the updated data back to school.json
+                save_data(current_data)
+
+                st.success("Your message has been submitted successfully!")
+            else:
+                st.error("Please fill out all fields.")                         
 
 
 # Academic Programs page
