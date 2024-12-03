@@ -170,7 +170,7 @@ def contact_us(data):
         name = st.text_input("Your Name", placeholder="Enter your name 🔤")
         email = st.text_input("Your Email", placeholder="Enter your email ✉️")
         message = st.text_area("Your Message", placeholder="Type your message here 📝")
-        submitted = st.form_submit_button("Submit")
+       submitted = st.button("Submit")
         if submitted:
     new_message = {
         "name": name,
@@ -182,7 +182,8 @@ def contact_us(data):
         file.write("\n")  # Add a newline for each message
     st.success("Thank you for reaching out! We’ll get back to you as soon as possible. 🌟")
 
-                                 
+       else:
+        st.error("Please fill out all fields.")                          
 
 
 # Academic Programs page
